@@ -1,131 +1,122 @@
 // Global
 require("dotenv").config();
 var keys = require("./keys.js");
+var fs = require('fs');
 var moment = require("moment");
-var fs = require("fs");
 var action = process.argv[2];
-var log = "";
-determineAction(action);
-
-function logData(log){
-    fs.appendFile("log.txt","\r\n" + moment().format("YYYY-MM-DD HH:mm:ss.SSS") + "\r\n\t" + log,function(){});
+// Set Parameter Value as One String After Action is Selected
+var parameter = "";
+for(var i = 0; i < process.argv.length; i++){
+    if(i > 2){
+        parameter = parameter + process.argv[i] + " ";
+    }
+}
+// Resets Log File
+fs.stat("log.txt",function(err,stats){
+    var createdLogFileTime = moment(stats.birthtime );
+    var currentTime = moment();
+    var difference = currentTime.diff(createdLogFileTime,"minutes");
+    if(stats.size > 100000 || stats.size === 0){
+        var insert = moment().format("YYYY-MM-DD HH:mm:ss.SSS")+"\t\t"+"Info"+"\t\t"+"Log File Created";
+        fs.writeFile("log.txt",insert,function(err){});
+    }
+        // Determines Action Value
+        init(action,parameter);
+});
+// Populates Log File
+function logData(log,type){
+    var header = "\r\n\t" + moment().format("YYYY-MM-DD HH:mm:ss.SSS") + "\t\t" + type;
+    if(typeof log === "object"){
+        log = "\r\n\t" + JSON.stringify(log);
+    }
+    else{
+        header = header + "\t\t" + log;
+        log = "";       
+    }
+    fs.appendFile("log.txt",header + log,function(){});
 };
-
-// node liri.js "my-tweets"
+// node liri.js my-tweets
 function myTweets(){
     var Twitter = require("twitter");
     var client = new Twitter(keys.twitter);
-    client.get('statuses/user_timeline',function(error,tweets){
+    var result = client.get('statuses/user_timeline',function(error,tweets){
         if(error){
-            log = "Twitter Response: " + JSON.stringify(error)
-            logData(log);
+            logData(error,"Error");
         }
         else{
-            logData("Twitter Response: ");
-            for(var i =0; i < tweets.length; i++){
-                console.log(tweets[i].created_at);
-                console.log(tweets[i].text);
-                log = "Tweet " + i + ": " + JSON.stringify(tweets[i]);
-                logData(log);
+            for(var i = 0; i < tweets.length; i++){
+                var twitterResponse = "Tweet[" + parseInt(i+1) +"]: " + tweets[i].text + " (" + tweets[i].created_at + ")";
+                logData(tweets[0],"Web Service Response");
+                console.log(twitterResponse);
             }
         }
     });
 };
-// node liri.js "spotify-this-song" "song-name-here"
+// node liri.js spotify-this-song <song-name-here>
 function spotifyThisSong(song){
+    if(!song){
+        song = "Ace of Base The Sign";
+    }
     var Spotify = require('node-spotify-api');
-    var spotify = new Spotify(keys.spotify);
-    spotify.search({type:'track',query:song,limit:1},function(error,response){
+    var client = new Spotify(keys.spotify);
+    return client.search({type:'track',query:song,limit:1},function(error,response){
         if(error){
-            log = "Spotify Response: " + JSON.stringify(error)
-            logData(log);
+            logData(error,"Error");
         }
         else{
-            console.log(response.tracks.items[0].artists[0].name);
-            console.log(response.tracks.items[0].name);
-            console.log(response.tracks.items[0].preview_url);
-            console.log(response.tracks.items[0].album.name);
-            log = "Spotify Response: " + JSON.stringify(response);
-            logData(log);
+            var spotifyResponse = "Artist: " + response.tracks.items[0].artists[0].name + "\r\n" + "Song: " + response.tracks.items[0].name + "\r\n" + "Preview: " + response.tracks.items[0].preview_url + "\r\n" + "Album: " + response.tracks.items[0].album.name;
+            logData(response,"Web Service Response");
+            console.log(spotifyResponse);
         }
     });
 };
-// node liri.js "movie-this"
+// node liri.js movie-this <movie-name-here>
 function movieThis(movie){
+    if(!movie){
+        movie = "Mr. Nobody";
+    }
     var request = require('request');
-    var url = "http://www.omdbapi.com/?apikey=trilogy&type=movie&t=" + movie
-    request(url,function(error,body){
+    var url = "http://www.omdbapi.com/?apikey=trilogy&type=movie&t=" + movie;
+    request(url,function(error,response,body){
         if(error){
-            log = "OMDB Response: " + JSON.stringify(error);
-            logData(log);
+            logData(error,"Error");
         }
         else{
             var result = JSON.parse(body);
-            console.log(result.Title);
-            console.log(result.Year);
-            console.log(result.imdbRating);
             for(var i = 0; i < result.Ratings.length; i++){
                 if(result.Ratings[i].Source === "Rotten Tomatoes"){
-                    console.log(result.Ratings[i].Value);
+                    var rtRating = result.Ratings[i].Value;
                 }
             }
-            console.log(result.Country);
-            console.log(result.Language);
-            console.log(result.Plot);
-            console.log(result.Actors);
-            log = "OMDB Response: " + JSON.stringify(body);
-            logData(log);
+            var omdbResponse = "Title: " + result.Title + "\r\n" + "Year: " + result.Year + "\r\n" + "imdb Rating: " + result.imdbRating + "\r\n" + "RottenTomatoes Rating: " + rtRating + "\r\n" + "Country: " + result.Country + "\r\n" + "Language: " + result.Language + "\r\n" + "Plot: " + result.Plot + "\r\n" + "Actors: " + result.Actors;
+            logData(result,"Web Service Response");
+            console.log(omdbResponse);
         }
     });
 };
-// Determines Which Function To Call
-function determineAction(action){
-    log = "Action: " + action;
-    logData(log);
-    if(action === "my-tweets"){
-        myTweets();
+// Initializes
+function init(action,parameter){
+    logData("Action: " + action,"Info");
+    switch(action){
+        case "my-tweets":
+            myTweets();
+            break;
+        case "spotify-this-song":
+            spotifyThisSong(parameter);  
+            break;
+        case "movie-this":
+            movieThis(parameter);
+            break;
+        case "do-what-it-says":
+            fs.readFile("random.txt","utf8",function(error,data){
+                data = data.split(",");
+                action = data[0];
+                parameter = data[1];
+                init(action,parameter);
+            });
+            break;
+        default:
+            logData("The action '" + action + "' does not exist.","Error");
+            console.log("I'm sorry, Liri does not understand what you're trying to say. Please try again.");   
     }
-    else if(action === "spotify-this-song"){
-        var song = process.argv[3];
-        if(!song){
-            song = "Ace of Base The Sign";
-        }
-        spotifyThisSong(song);
-    }
-    else if(action === "movie-this"){
-        var movie = process.argv[3];
-        if(!movie){
-            movie = "Mr. Nobody";
-        }
-        movieThis(movie);
-    }
-    // node liri.js "do-what-it-says"
-    else if(action === "do-what-it-says"){
-        fs.readFile("random.txt","utf8",function(error,data){
-            var randomText = data.split(",");
-            for(var i = 0; i < randomText.length; i++){
-                if(i === 0){
-                    action = randomText[i];
-                }
-                else if(i === 1){
-                    var parameter = randomText[i];
-                }
-            }
-            if(action === "my-tweets"){
-                myTweets();
-            }
-            else if(action === "spotify-this-song"){
-                song = parameter
-                spotifyThisSong(song);
-            }
-            else if(action === "movie-this"){
-                movie = parameter
-                movieThis(movie);
-            }
-        });
-    }
-    else{
-        logData("Action does not exist.");
-        console.log("error");
-    }
-};
+}
