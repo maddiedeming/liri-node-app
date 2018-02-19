@@ -51,6 +51,7 @@ function myTweets(){
     var result = client.get('statuses/user_timeline',function(error,tweets){
         if(error){
             logData(error,"Error");
+            console.log("Sorry, there has been an error with this service. Liri recommends trying again later!");
         }
         else{
             for(var i = 0; i < tweets.length; i++){
@@ -71,6 +72,7 @@ function spotifyThisSong(song){
     return client.search({type:'track',query:song,limit:1},function(error,response){
         if(error){
             logData(error,"Error");
+            console.log("Sorry, there has been an error with this service. Liri recommends trying again later!");
         }
         else{
             var spotifyResponse = "Artist: " + response.tracks.items[0].artists[0].name + "\r\n" + "Song: " + response.tracks.items[0].name + "\r\n" + "Preview: " + response.tracks.items[0].preview_url + "\r\n" + "Album: " + response.tracks.items[0].album.name;
@@ -89,6 +91,7 @@ function movieThis(movie){
     request(url,function(error,response,body){
         if(error){
             logData(error,"Error");
+            console.log("Sorry, there has been an error with this service. Liri recommends trying again later!");
         }
         else{
             var result = JSON.parse(body);
