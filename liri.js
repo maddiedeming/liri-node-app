@@ -25,9 +25,18 @@ fs.stat("log.txt",function(err,stats){
 });
 // Populates Log File
 function logData(log,type){
+    function replacer(key, value) {
+        if (typeof value === 'number') {
+            value = 2 * value;
+        }
+        else if (typeof value === 'string') {
+            return undefined;
+        }
+        return value;
+    }
     var header = "\r\n\t" + moment().format("YYYY-MM-DD HH:mm:ss.SSS") + "\t\t" + type;
     if(typeof log === "object"){
-        log = "\r\n\t" + JSON.stringify(log);
+        log = "\r\n\t" + JSON.stringify(log,null,'\t');
     }
     else{
         header = header + "\t\t" + log;
