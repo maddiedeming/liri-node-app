@@ -5,12 +5,7 @@ var fs = require('fs');
 var moment = require("moment");
 var action = process.argv[2];
 // Set Parameter Value as One String After Action is Selected
-var parameter = "";
-for(var i = 0; i < process.argv.length; i++){
-    if(i > 2){
-        parameter = parameter + process.argv[i] + " ";
-    }
-}
+var parameter = process.argv.splice(3).join(" ");
 // Resets Log File
 fs.stat("log.txt",function(err,stats){
     var createdLogFileTime = moment(stats.birthtime );
@@ -20,23 +15,14 @@ fs.stat("log.txt",function(err,stats){
         var insert = moment().format("YYYY-MM-DD HH:mm:ss.SSS")+"\t\t"+"Info"+"\t\t"+"Log File Created";
         fs.writeFile("log.txt",insert,function(err){});
     }
-        // Determines Action Value
-        init(action,parameter);
+    // Determines Action Value
+    init(action,parameter);
 });
 // Populates Log File
 function logData(log,type){
-    function replacer(key, value) {
-        if (typeof value === 'number') {
-            value = 2 * value;
-        }
-        else if (typeof value === 'string') {
-            return undefined;
-        }
-        return value;
-    }
     var header = "\r\n\t" + moment().format("YYYY-MM-DD HH:mm:ss.SSS") + "\t\t" + type;
     if(typeof log === "object"){
-        log = "\r\n\t" + JSON.stringify(log,null,'\t');
+        log = "\r\n\t" + JSON.stringify(log,null,2);
     }
     else{
         header = header + "\t\t" + log;
