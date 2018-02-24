@@ -1,4 +1,10 @@
 # liri-node-app
+## Installs
+```
+npm install twitter
+npm install spotify
+npm install request
+```
 ## Commands
 ### This will show your last 20 tweets and when they were created:
 ```
@@ -10,7 +16,7 @@ node liri.js my-tweets
 * The song's name
 * A preview link of the song from Spotify
 * The album that the song is from
-##### If no song is provided then your program will default to "The Sign" by Ace of Base.
+##### If no song is provided then the program will default to "The Sign" by Ace of Base.
 ```
 node liri.js spotify-this-song [song name]
 ```
@@ -24,7 +30,7 @@ node liri.js spotify-this-song [song name]
    * Language of the movie
    * Plot of the movie
    * Actors in the movie
-##### If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
+##### If no movie is provided then the program will default to "Mr. Nobody."
 ```
 node liri.js movie-this [movie name]
 ```
