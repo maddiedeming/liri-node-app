@@ -1,7 +1,7 @@
 {
   "name": "liri-node-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "LIRI is a Language Interpretation and Recognition Interface",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,5 +16,12 @@
   "bugs": {
     "url": "https://github.com/maddiedeming/liri-node-app/issues"
   },
-  "homepage": "https://github.com/maddiedeming/liri-node-app#readme"
+  "homepage": "https://github.com/maddiedeming/liri-node-app#readme",
+  "dependencies": {
+    "dotenv": "^5.0.0",
+    "moment": "^2.20.1",
+    "node-spotify-api": "^1.0.7",
+    "request": "^2.83.0",
+    "twitter": "^1.7.1"
+  }
 }

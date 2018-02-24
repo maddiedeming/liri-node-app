@@ -1,9 +1,11 @@
 # liri-node-app
 ## Installs
 ```
+npm install dotenv --save
 npm install twitter
-npm install spotify
+npm install --save node-spotify-api
 npm install request
+npm install moment
 ```
 ## Commands
 ### This will show your last 20 tweets and when they were created:
