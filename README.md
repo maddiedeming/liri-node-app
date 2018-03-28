@@ -1,13 +1,19 @@
 # liri-node-app
-## Installs
+## Install
 ```
-npm install dotenv --save
-npm install twitter
-npm install --save node-spotify-api
-npm install request
-npm install moment
+git clone https://github.com/maddiedeming/liri-node-app.git
+npm install 
 ```
+### Dependencies
+* dotenv
+* twitter
+* node-spotify-api
+* request
+* moment
 ## Commands
+```
+node liri.js [command]
+```
 ### This will show your last 20 tweets and when they were created:
 ```
 node liri.js my-tweets
