@@ -16,19 +16,14 @@ npm install
 ### .env File
 1. Create a new file and save as ".env" in the root directory.
 2. Copy and paste the following into the .env file:
-
+```
     SPOTIFY_ID=[Your Spotify ID]
-
     SPOTIFY_SECRET=[Your Spotify Secret]
-
     TWITTER_CONSUMER_KEY=[Your Twitter Consumer Key]
-
     TWITTER_CONSUMER_SECRET=[Your Twitter Consumer Secret]
-
     TWITTER_ACCESS_TOKEN_KEY=[Your Twitter Access Token Key]
-
     TWITTER_ACCESS_TOKEN_SECRET=[Your Twitter Access Token Secret]
-
+```
 3. Edit all of the bracket values above to coordinate with your Spotify and Twitter Application API information.
 ## Commands
 ### my-tweets
