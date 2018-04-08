@@ -11,6 +11,7 @@ In this assignment, you will make LIRI. LIRI is like iPhone's SIRI. However, whi
 ### Install Locally
 ```
 git clone https://github.com/maddiedeming/liri-node-app.git
+cd liri-node-app/
 npm install
 ```
 ### .env File
